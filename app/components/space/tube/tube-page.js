@@ -1,19 +1,16 @@
 import React from 'react'
-import Slider from '@react-native-community/slider';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList, ScrollView, TextInput, Image, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import * as MyUserActions from '../../../../redux/MyUser/actions'
 import { bindActionCreators } from 'redux'
-import Video from 'react-native-video'
 import FastImage from 'react-native-fast-image'
-import LinearGradient from 'react-native-linear-gradient'
 import CommentList from '../../core/comment-list'
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faPaperPlane, faPause, faPlay, faThumbsUp } from '@fortawesome/pro-light-svg-icons'
 import * as TubePageActions from '../../../../redux/TubePage/actions'
 import { getDateTranslated } from '../../../services/translation/translation-service'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import VideoPlayer from '../../core/reusable/video/video-player'
 
 class TubePage extends React.Component {
 
@@ -21,13 +18,7 @@ class TubePage extends React.Component {
         super(props)
         this.state = {
             commentView: false,
-            videoReady: false,
-            video: {
-                isPaused: false,
-                currentTime: 0,
-                duration: 0.1,
-                overlay: false
-            }
+            videoReady: false
         }
     }
 
@@ -43,40 +34,7 @@ class TubePage extends React.Component {
         this.uploadPageTube(this.props.screenProps.rootNavigation.state.params.tubeId)
     }
 
-    // video actions
-    playPauseVideo = () => {
-        if (this.state.videoReady) {
-            this.setState((prevState) => {
-                return ({
-                    video: { ...prevState.video, isPaused: !prevState.video.isPaused }
-                })
-            });
-        }
-        clearTimeout(this.overlayTimer)
-        this.setState({ video: { ...this.state.video, overlay: true } })
-        this.overlayTimer = setTimeout(() => this.setState({ video: { ...this.state.video, overlay: false } }), 3000);
-    }
-    onVideoLoad = ({ duration }) => this.setState({ video: { ...this.state.video, duration } });
-    onVideoProgress = ({ currentTime }) => this.setState({ video: { ...this.state.video, currentTime } });
-    onVideoEnd = () => {
-        this.setState({ video: { ...this.state.video, isPaused: false }});
-        this.video.seek(0);
-    }
-    onSliderSeek = (slide) => {
-        this.player.seek(slide * this.state.video.duration);
-    }
-
-    getTime = t => {
-        const digit = n => n < 10 ? `0${n}` : `${n}`;
-        // const t = Math.round(time);
-        const sec = digit(Math.floor(t % 60));
-        const min = digit(Math.floor((t / 60) % 60));
-        const hr = digit(Math.floor((t / 3600) % 60));
-        return hr === digit(0) ? min + ':' + sec : hr + ':' + min + ':' + sec; // this will convert sec to timer string
-        // 33 -> 00:00:33
-        // this is done here
-        // ok now the theme is good to look
-    }
+    
 
     // to upload the page of the tube
     uploadPageTube = (id) => {
@@ -86,76 +44,11 @@ class TubePage extends React.Component {
 
     // to display the header view
     _headerRender = () => {
-        const { duration, currentTime, overlay, isPaused } = this.state.video;
         return (
             <View>
                 {/* Video section */}
                 <View style={styles.videoSection}>
-                    {/* Video */}
-                    <Video
-                        ref={(ref) => this.player = ref}
-                        onReadyForDisplay={() => this.setState({ videoReady: true })}
-                        style={{ width: '100%', height: '100%', backgroundColor: 'black' }}
-                        source={{ uri: this.props.TubePage.tube.videoLink }}
-                        repeat={true}
-                        minLoadRetryCount={5}
-                        volume={0.1}
-                        resizeMode={'cover'}
-                        controls={false}
-                        paused={isPaused}
-                        onLoad={this.onVideoLoad}
-                        onProgress={this.onVideoProgress}
-                        onEnd={this.onVideoEnd}
-                    />
-                    {/* Poster */}
-                    <TouchableOpacity
-                        onPress={this.playPauseVideo}
-                        style={{ ...styles.overlay, backgroundColor: 'black' }}>
-                        {
-                            this.state.videoReady ? ( // controls if ready
-                                <>
-                                    { overlay && ( // check for overlay
-                                        <View style={styles.overlay}>
-                                            <LinearGradient
-                                                start={{ x: 0, y: 0 }}
-                                                end={{ x: 0, y: 1 }}
-                                                colors={['transparent', '#000000a0']}
-                                                style={{ ...styles.overlay, justifyContent: 'center', alignItems: 'center' }}
-                                            >
-                                                {/* <TouchableOpacity onPress={this.playPauseVideo} style={{ width: 50, height: 50, borderRadius: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                                    <FontAwesomeIcon icon={this.state.video.isPaused ? faPlay : faPause} color={"#FFFFFF"} size={25} />
-                                                </TouchableOpacity> */}
-
-                                                <View style={{ position: 'absolute', left: 0, bottom: 0, right: 0, flexDirection: 'row', paddingVertical: 15, paddingHorizontal: 10 }}>
-                                                    <Text style={{ color: 'white', maxWidth: 40 }}>{ this.getTime(this.state.video.currentTime) }</Text>
-                                                    <View style={{ flex: 1, marginHorizontal: 10 }}>
-                                                    <Slider
-                                                        minimumTrackTintColor="#307ecc"
-                                                        maximumTrackTintColor="#000000"
-                                                        value={currentTime / duration}
-                                                        onValueChange={this.onSliderSeek} />
-                                                    </View>
-                                                    <Text style={{ color: 'white', maxWidth: 40 }}>{ this.getTime(this.state.video.duration) }</Text>
-                                                </View>
-
-                                            </LinearGradient>
-                                        </View>
-                                    ) }
-                                </>
-                            ) : ( // poster if not ready
-                                <View style={{ width: '100%', height: 250, position: 'absolute', top: 0 }}>
-                                    <FastImage
-                                        style={{ flex: 1 }}
-                                        source={{ uri: this.props.TubePage.tube.posterLink, priority: FastImage.priority.normal }}
-                                        resizeMode={FastImage.resizeMode.cover}
-                                    />
-                                    <View style={{ backgroundColor: '#00000045', position: 'absolute', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                                        <ActivityIndicator size='large' color="#ffffff" />
-                                    </View>
-                                </View>
-                            )
-                        }
-                    </TouchableOpacity>
+                    <VideoPlayer src={this.props.TubePage.tube.videoLink} posterSrc={this.props.TubePage.tube.posterLink} />
                 </View>
 
                 {/* Profile */}
@@ -395,9 +288,7 @@ const styles = StyleSheet.create({
     },
     videoSection: {
         height: 250,
-        width: '100%', 
-        height: 250, 
-        backgroundColor: 'black',
+        width: '100%',
         position: 'relative'
     },
     overlay: {
