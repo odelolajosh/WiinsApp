@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import Video from 'react-native-video';
 import FastImage from 'react-native-fast-image';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Slider from '@react-native-community/slider';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPause, faPlay } from '@fortawesome/pro-light-svg-icons';
-import Snackbar from 'react-native-snackbar';
 
 
 class VideoPlayer extends React.Component {
@@ -40,7 +39,7 @@ class VideoPlayer extends React.Component {
     // video actions
     onVideoReadyToPlay = () => {
         this.setState({ videoReady: true, overlay: true })
-        this.scheduleCloseOverlay();
+        // this.scheduleCloseOverlay();
     }
     playPauseVideo = () => {
         if (this.state.videoReady) {
@@ -63,12 +62,13 @@ class VideoPlayer extends React.Component {
             return null;
         }
 
-        if (this.state.overlay) {
-            this.setState({ overlay: false })
-        } else {
-            this.setState({ overlay: true })
-            this.scheduleCloseOverlay()
-        }
+        console.log("overlay", this.state.overlay)
+        // if (this.state.overlay) {
+        //     this.setState({ overlay: false })
+        // } else {
+        //     this.setState({ overlay: true })
+        //     this.scheduleCloseOverlay()
+        // }
     }
     scheduleCloseOverlay = () => {
         this.overlayTimer ? clearTimeout(this.overlayTimer) : null
@@ -91,7 +91,7 @@ class VideoPlayer extends React.Component {
     _renderOverlay = () => {
         const { paused, duration, currentTime, overlay } = this.state;
         return (
-            <TouchableOpacity style={{ ...styles.fillParent, opacity: overlay ? 1 : 0 }}>
+            <TouchableWithoutFeedback style={{ ...styles.fillParent, display: overlay ? 'flex' : 'none' }} onPress={this.onClickOnVideo}>
                 <LinearGradient
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
@@ -100,7 +100,7 @@ class VideoPlayer extends React.Component {
                 >
 
                     {/* The absolute fill view for toggling overlay */}
-                    <View style={{ ...styles.overlay, zIndex: 0 }} onPress={this.onClickOnVideo} />
+                    <TouchableWithoutFeedback style={{ ...styles.overlay, zIndex: 0 }} onPress={this.onClickOnVideo} />
 
                     {/* The Play and Pause centered button */}
                     <TouchableOpacity onPress={this.playPauseVideo} style={{ width: 50, height: 50, borderRadius: 30, justifyContent: 'center', alignItems: 'center' }}>
@@ -120,7 +120,7 @@ class VideoPlayer extends React.Component {
                         <Text style={{ color: 'white', maxWidth: 40 }}>{ this.getTime(duration) }</Text>
                     </View>
                 </LinearGradient>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
         );
     }
 
