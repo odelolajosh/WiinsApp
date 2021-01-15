@@ -25,43 +25,26 @@ class HomeTube extends React.Component {
     testValue = {
         a: 'https://i.pinimg.com/236x/c7/a1/b8/c7a1b863aeba4b9a409b61ad7201924b.jpg',
         b: 'https://i.pinimg.com/236x/e1/20/a8/e120a8628766f705cfd017ecf9ef00ea.jpg'
-    }   
+    }
 
     UNSAFE_componentWillMount = () => {
         this.props.actions.getTubeMenuActions()
     }
 
-    // to display the header tube
-    _headerTube = () => {
+    // to display the header view of the screen
+    _header = () => {
         return (
             <View style={styles.header_container}>
-
                 {/* search bar */}
-                <View style={{ flex: 8 }}>
-                    <View style={styles.container_search_bar}>
-                        <View style={styles.container_search_bar_icon}>
-                        <FontAwesomeIcon icon={faSearch} color={'grey'} size={25} />
-                        </View>
-                        <TextInput
-                            placeholder='Search'
-                            style={styles.search_bar}
-                            placeholderTextColor="#737373"
-                        />
-                    </View>
+                <View style={styles.container_search_bar}>
+                    <TextInput
+                        placeholder='Search'
+                        style={styles.search_bar}
+                        placeholderTextColor="#737373"
+                        value={this.state.search}
+                        blurOnSubmit={true}
+                    />
                 </View>
-
-                {/* Add Btn */}
-                <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                    <TouchableOpacity style={styles.add_button}>
-                        <LinearGradient
-                            colors={['#FF906A', '#FF3F64']}
-                            start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }}
-                            style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-                            <FontAwesomeIcon icon={faPlus} color={'white'} size={19} />
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </View>
-
             </View>
         )
     }
@@ -111,7 +94,7 @@ class HomeTube extends React.Component {
     /*
     TODO: Change render value on real api data
     */
-    _oneTubeRender = (item, isLarge=false, isLastIndex) => {
+    _oneTubeRender = (item, isLarge = false, isLastIndex) => {
         return (
             <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('TubePage', { tubeId: item.tube._id })}
@@ -145,7 +128,7 @@ class HomeTube extends React.Component {
     }
 
     // to display the tube list
-    _showTubeList = (tubeList, isLarge=false) => {
+    _showTubeList = (tubeList, isLarge = false) => {
         return (
             <View style={{ paddingBottom: 10 }}>
                 <View style={{ flexDirection: 'row' }}>
@@ -168,9 +151,9 @@ class HomeTube extends React.Component {
     }
 
     // to display the tubelist by section
-    _tubeListBySection = (tubeList, title, titleStyle={}, isLarge=false) => {
-        if(tubeList === undefined || tubeList === null || tubeList.length == 0) tubeList = [{}, {}, {}] //return null
-        
+    _tubeListBySection = (tubeList, title, titleStyle = {}, isLarge = false) => {
+        if (tubeList === undefined || tubeList === null || tubeList.length == 0) tubeList = [{}, {}, {}] //return null
+
         return (
             <View style={styles.container_section}>
 
@@ -197,17 +180,17 @@ class HomeTube extends React.Component {
     render() {
         return (
             <>
-            <StatusBar backgroundColor="white" barStyle="dark-content" />
-            <ScrollView style={styles.main_container}>
-                {this._headerTube()}
-                {this._tubeListBySection(this.props.TubeMenu.trending, 'Trending', { fontWeight: 'bold' }, true)}
-                {this._tubeListBySection(this.props.TubeMenu.suggestions, 'Recommended For You')}
-                
-                {/* {this._categorieViews()} */}
-                {this._tubeListBySection(this.props.TubeMenu.following, 'Following')}
-                {this._tubeListBySection(this.props.TubeMenu.trending, 'Trending')}
-                {this._tubeListBySection(this.props.TubeMenu.suggestions, 'Suggestion')}
-            </ScrollView>
+                <StatusBar backgroundColor="white" barStyle="dark-content" />
+                <ScrollView style={styles.main_container}>
+                    {this._header()}
+                    {this._tubeListBySection(this.props.TubeMenu.trending, 'Trending', { fontWeight: 'bold' }, true)}
+                    {this._tubeListBySection(this.props.TubeMenu.suggestions, 'Recommended For You')}
+
+                    {/* {this._categorieViews()} */}
+                    {this._tubeListBySection(this.props.TubeMenu.following, 'Following')}
+                    {this._tubeListBySection(this.props.TubeMenu.trending, 'Trending')}
+                    {this._tubeListBySection(this.props.TubeMenu.suggestions, 'Suggestion')}
+                </ScrollView>
             </>
         )
     }
@@ -216,25 +199,28 @@ class HomeTube extends React.Component {
 const styles = StyleSheet.create({
     main_container: {
         flex: 1,
-        paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() + 10 : 0,
         backgroundColor: '#eef2f4'
     },
     header_container: {
-        flexDirection: 'row',
+        paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() + 10 : 10,
+        paddingBottom: 15,
+        paddingHorizontal: 25,
+        backgroundColor: '#f9fafc',
+        borderBottomRightRadius: 25,
+        borderBottomLeftRadius: 25,
         position: 'relative',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        backgroundColor: 'white'
+        borderWidth: 0.3,
+        borderColor: '#c3c3c36e'
     },
     container_search_bar: {
-        height: 38,
+        height: 45,
         fontSize: 15,
+        paddingLeft: 15,
         flexDirection: 'row',
-        borderRadius: 18,
-        backgroundColor: '#eef2f4',
+        borderRadius: 25,
+        backgroundColor: '#edf1f3',
         overflow: 'hidden',
-        alignItems: 'center',
-        position: 'relative'
+        alignItems: 'center'
     },
     container_search_bar_icon: {
         position: 'absolute',
@@ -246,8 +232,8 @@ const styles = StyleSheet.create({
     },
     search_bar: {
         fontSize: 15,
-        paddingLeft: 50,
-        flex: 1,
+        paddingLeft: 5,
+        paddingVertical: 15,
         width: '100%'
     },
     add_button: {
@@ -272,7 +258,7 @@ const styles = StyleSheet.create({
     one_hastag: {
         marginHorizontal: 8
     },
-    oneTubeContainer: (isLarge=false, isLastIndex=false) => ({
+    oneTubeContainer: (isLarge = false, isLastIndex = false) => ({
         marginHorizontal: 10,
         marginVertical: 15,
         marginRight: isLastIndex ? 40 : 10,
@@ -308,7 +294,7 @@ const ActionCreators = Object.assign(
     {},
     MyUserActions,
     TubeMenuActions
-);
+)
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(ActionCreators, dispatch),

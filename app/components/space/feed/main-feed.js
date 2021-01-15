@@ -24,7 +24,11 @@ class MainFeed extends React.Component {
 
 const styles = StyleSheet.create({
     feed_container: { 
+<<<<<<< HEAD
         flex: 1,
+=======
+        flex: 1
+>>>>>>> 564cbdcf122bc1bdd024a781ad85656d248c0811
     }
 })
 

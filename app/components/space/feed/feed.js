@@ -7,15 +7,14 @@ import { connect } from 'react-redux'
 import * as PublicationFeedActions from '../../../../redux/FeedPublications/actions'
 import * as SearchActions from '../../../../redux/SearchBar/actions'
 import { bindActionCreators } from 'redux'
-import PublicationStandard from '../../core/publication-standard'
 import PublicationStoryHeader from './stories/publication-story-header'
 import StantardSuggest from '../../core/stantard-suggest'
 import PublicationModal from '../../core/publication-modal'
 import MainPublication from '../publication/main-publication'
 import StoriesTrend from './stories/stories-trend'
-import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faUserCircle, faCog } from '@fortawesome/pro-light-svg-icons'
+import CardNewFeed from './../../core/card/card-new-feed'
 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToBottom = 20;
@@ -23,6 +22,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         contentSize.height - paddingToBottom;
 }
 
+<<<<<<< HEAD
 const Box = ({ 
     children, 
     flexDirection="column", 
@@ -34,6 +34,19 @@ const Box = ({
     return (
         <View style={{ justifyContent, alignItems, flexDirection, backgroundColor }}>
             { children }
+=======
+const Box = ({
+    children,
+    flexDirection = "column",
+    // flex=1,
+    backgroundColor = "transparent",
+    alignItems = "flex-start",
+    justifyContent = "flex-start"
+}) => {
+    return (
+        <View style={{ justifyContent, alignItems, flexDirection, backgroundColor }}>
+            { children}
+>>>>>>> 564cbdcf122bc1bdd024a781ad85656d248c0811
         </View>
     )
 }
@@ -161,14 +174,7 @@ class Feed extends React.Component {
         )
         if (!!this.props.FeedPublications.publications && this.props.FeedPublications.publications.length !== 0) {
             return (
-                // <FlatList
-                //     onScrollBeginDrag={this._onScroll}
-                //     data={this.props.FeedPublications.publications}
-                //     renderItem={({ item, index }) => <PublicationStandard index={index} navigation={this.props.navigation} publication={item} space={'feed'} />}
-                //     keyExtractor={(item) => item._id.toString()}
-                //     ItemSeparatorComponent={FeedSeparator}
-                // />
-                <View style={{ flexDirection: 'row' }}>
+                {/* <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 1 }}>
                         { 
                             mapPublication(
@@ -187,17 +193,26 @@ class Feed extends React.Component {
                             ))
                         }
                     </View>
-                </View>
+                </View> */}
+                <FlatList
+                    onScrollBeginDrag={this._onScroll}
+                    data={this.props.FeedPublications.publications}
+                    renderItem={({ item, index }) => <CardNewFeed index={index} navigation={this.props.navigation} publication={item} space={'feed'} />}
+                    keyExtractor={(item) => item._id.toString()}
+                    ItemSeparatorComponent={FeedSeparator}
+                />
             )
-        } else {
-            return null
-        }
+        } else return null
     }
 
     // to display the list of the publications
     _displayPublicationFeed = () => { //borderTopLeftRadius: 35, borderTopRightRadius: 35
         return (
+<<<<<<< HEAD
             <View style={{ flex: 1, overflow: 'hidden' }}> 
+=======
+            <View style={{ flex: 1, overflow: 'hidden' }}>
+>>>>>>> 564cbdcf122bc1bdd024a781ad85656d248c0811
                 <ScrollView scrollEventThrottle={5} style={{ borderTopLeftRadius: 35, borderTopRightRadius: 35 }} showsVerticalScrollIndicator={false} >
                     <PublicationStoryHeader goToPublication={this._togglePublicationMode} openStory={this._toggleStoryTrend} />
                     {this._publicationList()}
@@ -254,9 +269,13 @@ class Feed extends React.Component {
 const styles = StyleSheet.create({
     feed_container: {
         flex: 1,
+<<<<<<< HEAD
         backgroundColor: '#eef2f4',
         paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() + 5 : 0,
         margin: 4
+=======
+        backgroundColor: '#eef2f4'
+>>>>>>> 564cbdcf122bc1bdd024a781ad85656d248c0811
     },
     header_container: {
         position: 'relative',

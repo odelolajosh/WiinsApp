@@ -100,6 +100,13 @@ export function likeMusic(id) {
     return { type: ActionTypes.LIKE_MUSIC, id }
 }
 
+<<<<<<< HEAD
+=======
+export function likeMusicFromPlayer(id) {
+    return { type: ActionTypes.LIKE_MUSIC_FROM_PLAYER, id }
+}
+
+>>>>>>> 564cbdcf122bc1bdd024a781ad85656d248c0811
 export function likeMusicSuccess(id) {
     return { type: ActionTypes.LIKE_MUSIC_SUCCESS, id }
 }
@@ -176,4 +183,35 @@ export function dislikeMusicAction(id) {
             return dispatch(dislikeMusic(id));
         }
     }
+<<<<<<< HEAD
+=======
+}
+
+export function likeMusicFromThePlayerAction(id) {
+    return async (dispatch) => {
+        try {
+
+            dispatch(likeMusic(id))
+            const url = 'https://wiins-backend.herokuapp.com/music/liked/' + id
+            const token = await AsyncStorage.getItem('userToken')
+
+            return fetch(url, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json', 'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then((response) => response.json())
+                .then(async (response) => {
+                    if (response.status == 200) {
+                        return dispatch(likeMusicSuccess(id))
+                    }
+                    return dispatch(likeMusicFail(id))
+                })
+        } catch (error) {
+            return dispatch(likeMusic(id));
+        }
+    }
+>>>>>>> 564cbdcf122bc1bdd024a781ad85656d248c0811
 }

@@ -1,9 +1,9 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, DeviceEventEmitter } from 'react-native'
 import { connect } from 'react-redux'
-import * as PublicationFeedActions from '../../../redux/FeedPublications/actions'
-import * as ProfilePublicationActions from '../../../redux/ProfilePublications/actions'
-import * as DiscoverdPublicationActions from '../../../redux/DiscoverPublications/actions'
+import * as PublicationFeedActions from '../../../../redux/FeedPublications/actions'
+import * as ProfilePublicationActions from '../../../../redux/ProfilePublications/actions'
+import * as DiscoverdPublicationActions from '../../../../redux/DiscoverPublications/actions'
 import { bindActionCreators } from 'redux'
 import FastImage from 'react-native-fast-image'
 import LinearGradient from 'react-native-linear-gradient'
@@ -13,7 +13,7 @@ import { faHeart as faHeartEmpty } from '@fortawesome/pro-light-svg-icons'
 import { faHeart as faHeartFull } from '@fortawesome/free-solid-svg-icons'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
-class PublicationStandard extends React.Component {
+class CardNewFeed extends React.Component {
 
     constructor(props) {
         super(props)
@@ -591,4 +591,4 @@ const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(ActionCreators, dispatch),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublicationStandard)
+export default connect(mapStateToProps, mapDispatchToProps)(CardNewFeed)
