@@ -100,13 +100,10 @@ export function likeMusic(id) {
     return { type: ActionTypes.LIKE_MUSIC, id }
 }
 
-<<<<<<< HEAD
-=======
 export function likeMusicFromPlayer(id) {
     return { type: ActionTypes.LIKE_MUSIC_FROM_PLAYER, id }
 }
 
->>>>>>> 564cbdcf122bc1bdd024a781ad85656d248c0811
 export function likeMusicSuccess(id) {
     return { type: ActionTypes.LIKE_MUSIC_SUCCESS, id }
 }
@@ -183,8 +180,6 @@ export function dislikeMusicAction(id) {
             return dispatch(dislikeMusic(id));
         }
     }
-<<<<<<< HEAD
-=======
 }
 
 export function likeMusicFromThePlayerAction(id) {
@@ -213,5 +208,4 @@ export function likeMusicFromThePlayerAction(id) {
             return dispatch(likeMusic(id));
         }
     }
->>>>>>> 564cbdcf122bc1bdd024a781ad85656d248c0811
 }

@@ -12,6 +12,7 @@ import { faPlay, faComment, faHeart } from '@fortawesome/pro-light-svg-icons'
 import { faHeart as faHeartEmpty } from '@fortawesome/pro-light-svg-icons'
 import { faHeart as faHeartFull } from '@fortawesome/free-solid-svg-icons'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { getDateTranslated } from '../../../services/translation/translation-service'
 
 class CardNewFeed extends React.Component {
 
@@ -413,7 +414,7 @@ class CardNewFeed extends React.Component {
     }
 
     _showCardHeader = (publication) => {
-        const { page, profile } = publication;
+        const { page, profile, createdAt } = publication;
 
         const pictureprofile = profile ? profile.pictureprofile : page.pictureprofile;
         const name = profile ? profile._meta.pseudo : page.name;
@@ -433,7 +434,7 @@ class CardNewFeed extends React.Component {
                 </TouchableOpacity>
                 <View style={{ flex: 1 }}>
                     <Text style={{ color: '#3F3F3F', fontSize: 13, textTransform: 'capitalize' }}>{ name }</Text>
-                    <Text style={{ color: '#4E586E', fontSize: 13 }}>{ '2 hours ago' }</Text>
+                    <Text style={{ color: '#4E586E', fontSize: 13 }}>{ getDateTranslated(createdAt) }</Text>
                 </View>
             </View>
         )
