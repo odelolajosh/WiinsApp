@@ -1,7 +1,8 @@
 import * as ActionTypes from './constants'
 import TrackPlayer from 'react-native-track-player'
 import AsyncStorage from '@react-native-community/async-storage'
-import { likeMusicFromThePlayerAction } from './../PlaylistMusicPage/actions'
+import { likeMusicSuccess, dislikeMusicSuccess } from './../PlaylistMusicPage/actions'
+import { addMusicAfterLiked, pullMusicAfterDisliked } from './../MyFavMusic/actions'
 
 export function continueMusic() {
     return { type: ActionTypes.CONTINUE_MUSIC }
@@ -111,7 +112,8 @@ export function playMusicActions(music, payload) {
                     artist: music.profile._meta.pseudo,
                     artwork: music.imgUrl,
                     profile: music.profile,
-                    isLiked: music.isLiked
+                    isLiked: music.isLiked,
+                    music: music
                 }
             }
 
@@ -217,8 +219,8 @@ export function likeMusicFromPlayerAction(music) {
 
             if (!music) return null
 
-            dispatch(likeMusicFromPlayer(music.id))
-            const url = 'https://wiins-backend.herokuapp.com/music/liked/' + music.id
+            dispatch(likeMusicFromPlayer(music._id))
+            const url = 'https://wiins-backend.herokuapp.com/music/liked/' + music._id
             const token = await AsyncStorage.getItem('userToken')
 
             return fetch(url, {
@@ -233,18 +235,17 @@ export function likeMusicFromPlayerAction(music) {
                     if (response.status == 200) {
 
                         // update the music in the playlist
-                        dispatch(likeMusicFromThePlayerAction(music.id))
+                        dispatch(likeMusicSuccess(music._id))
 
                         // add the music in the favorite playlist
-                        // dispatch(addMusicAfterLiked(music))
+                        dispatch(addMusicAfterLiked(music))
 
-                        return dispatch(likeMusicFromPlayerSuccess(music.id))
+                        return dispatch(likeMusicFromPlayerSuccess(music._id))
                     }
-                    return dispatch(likeMusicFromPlayerFail(music.id))
+                    return dispatch(likeMusicFromPlayerFail(music._id))
                 })
         } catch (error) {
-            console.log(error)
-            return dispatch(likeMusicFromPlayer(music.id));
+            return dispatch(likeMusicFromPlayerFail(music._id))
         }
     }
 }
@@ -253,7 +254,7 @@ export function likeMusicFromPlayerAction(music) {
 export function dislikeMusicFromPlayerAction(id) {
     return async (dispatch) => {
         try {
-
+            
             dispatch(dislikeMusicFromPlayer(id))
             const url = 'https://wiins-backend.herokuapp.com/music/dislike/' + id
             const token = await AsyncStorage.getItem('userToken')
@@ -270,17 +271,54 @@ export function dislikeMusicFromPlayerAction(id) {
                     if (response.status == 200) {
 
                         // update the music in the playlist
-                        // to do..
+                        dispatch(dislikeMusicSuccess(id))
 
                         // add the music in the favorite playlist
-                        // dispatch(pullMusicAfterDisliked(id))
+                        dispatch(pullMusicAfterDisliked(id))
 
                         return dispatch(dislikeMusicFromPlayerSuccess(id))
                     }
                     return dispatch(dislikeMusicFromPlayerFail(id))
                 })
         } catch (error) {
-            return dispatch(dislikeMusicFromPlayer(id));
+            return dispatch(dislikeMusicFromPlayer(id))
+        }
+    }
+}
+
+export function followArtist(id) {
+    return { type: ActionTypes.FOLLOW_ARTIST, id }
+}
+
+export function followArtistSuccess() {
+    return { type: ActionTypes.FOLLOW_ARTIST_SUCCESS }
+}
+
+export function followArtistFail(id) {
+    return { type: ActionTypes.FOLLOW_ARTIST_FAIL, id }
+}
+
+export function followArtistActions(musicId, profileId){
+    return async (dispatch) => {
+        try {
+            dispatch(followArtist())
+
+            const token = await AsyncStorage.getItem('userToken')
+            return fetch('https://wiins-backend.herokuapp.com/profile/follow/' + profileId, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json', 'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                }
+            })
+                .then((response) => response.json())
+                .then(response => {
+                    if (response.status == 200) return dispatch(followArtistSuccess())
+                    dispatch(followArtistFail(response.status))
+                })
+
+        } catch(error){
+            dispatch(followArtistFail(error))
         }
     }
 }

@@ -8,6 +8,7 @@ import Modal from 'react-native-modal'
 import FastImage from 'react-native-fast-image'
 import TrackPlayer from 'react-native-track-player'
 import * as PlayerMusicActions from '../../../redux/Player/actions'
+import * as PlaylistPageActions from '../../../redux/PlaylistMusicPage/actions'
 import { faMusic, faAngleDown, faRepeat } from '@fortawesome/pro-light-svg-icons'
 import { faHeart, faPause, faUserPlus, faStepBackward, faStepForward, faRandom, faPlay } from '@fortawesome/pro-solid-svg-icons'
 
@@ -22,8 +23,9 @@ class MiniPlayer extends React.Component {
         }
     }
 
-    _likeMusic = () => {
-        this.props.actions.likeMusicFromPlayerAction(this.props.Player.musicIsPlaying)
+    _likeMusic = async () => {
+        // send the request
+        await this.props.actions.likeMusicFromPlayerAction(this.props.Player.musicIsPlaying.music)
     }
 
     componentDidMount() {
@@ -74,6 +76,26 @@ class MiniPlayer extends React.Component {
     // to continu the music
     _continueMusic = () => {
         this.props.actions.continuePlayerActions()
+    }
+
+    // to show relation icon
+    _displayRelationIcon = () => {
+        switch (true) {
+            case (this.props.Player.musicIsPlaying.music.profile.relation == 'friend' || this.props.Player.musicIsPlaying.music.profile.relation == 'following'):
+                return (
+                    <TouchableOpacity style={{ backgroundColor: '#cdcdcd54', borderRadius: 50, padding: 10 }}>
+                        <FontAwesomeIcon icon={faUserPlus} color={'#0066cc'} size={19} />
+                    </TouchableOpacity>
+                )
+            case (this.props.Player.musicIsPlaying.music.profile == this.props.MyUser.user.profile): return null
+            default:
+                return (
+                    <TouchableOpacity onPress={() => this.props.actions.followArtistActions(this.props.Player.musicIsPlaying.music._id, this.props.Player.musicIsPlaying.music.profile._id)}
+                     style={{ backgroundColor: '#cdcdcd54', borderRadius: 50, padding: 10 }}>
+                        <FontAwesomeIcon icon={faUserPlus} color={'grey'} size={19} />
+                    </TouchableOpacity>
+                )
+        }
     }
 
     // to select the music modal view
@@ -140,9 +162,7 @@ class MiniPlayer extends React.Component {
 
                             {/* Follow Btn */}
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
-                                <TouchableOpacity style={{ backgroundColor: '#cdcdcd54', borderRadius: 50, padding: 10 }}>
-                                    <FontAwesomeIcon icon={faUserPlus} color={'#0066cc'} size={19} />
-                                </TouchableOpacity>
+                                {this._displayRelationIcon()}
                             </View>
 
                         </View>
@@ -252,12 +272,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     MyUser: state.MyUser,
-    Player: state.Player
+    Player: state.Player,
+    PlaylistPage: state.PlaylistPage,
 })
 
 const ActionCreators = Object.assign(
     {},
-    PlayerMusicActions
+    PlayerMusicActions,
+    PlaylistPageActions,
 )
 
 const mapDispatchToProps = dispatch => ({
