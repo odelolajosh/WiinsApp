@@ -71,6 +71,36 @@ export default PlayerReducer = (state = initialState, action) => {
         }
       }
     }
+    case ActionTypes.CONTROL_REPEAT_DEACTIVATED: {
+      return {
+        ...state,
+        repeatMode: 'none'
+      }
+    }
+    case ActionTypes.CONTROL_REPEAT_ONE_MUSIC: {
+      return {
+        ...state,
+        repeatMode: 'music'
+      }
+    }
+    case ActionTypes.CONTROL_REPEAT_ONE_PLAYLIST: {
+      return {
+        ...state,
+        repeatMode: 'playlist'
+      }
+    }
+    case ActionTypes.SHUFFLE_MUSIC: {
+      return {
+        ...state,
+        random: true,
+      }
+    }
+    case ActionTypes.UNSHUFFLE_MUSIC: {
+      return {
+        ...state,
+        random: false,
+      }
+    }
     default: return { ...state }
   }
 }

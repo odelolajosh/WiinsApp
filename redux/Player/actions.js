@@ -69,7 +69,13 @@ export function stopPlayer() {
 }
 
 export function progessTimerActions(position, duration) {
-    return (dispatch) => {
+    return (dispatch, props) => {
+
+        // control the loops
+        if ( ((Math.round(duration) - Math.round(position)) < 0.5 ) && props().Player.repeatMode == 'music') {
+            TrackPlayer.seekTo(0)
+            return null
+        }
 
         if (position <= 0) return null
         const minutes = Math.floor(position / 60)
@@ -147,7 +153,8 @@ export function playRandomMusicInPlaylistActions(payload) {
                     artist: music.profile._meta.pseudo,
                     artwork: music.imgUrl,
                     profile: music.profile,
-                    isLiked: music.isLiked
+                    isLiked: music.isLiked,
+                    music: music
                 }
 
             }
@@ -250,11 +257,10 @@ export function likeMusicFromPlayerAction(music) {
     }
 }
 
-
 export function dislikeMusicFromPlayerAction(id) {
     return async (dispatch) => {
         try {
-            
+
             dispatch(dislikeMusicFromPlayer(id))
             const url = 'https://wiins-backend.herokuapp.com/music/dislike/' + id
             const token = await AsyncStorage.getItem('userToken')
@@ -298,7 +304,7 @@ export function followArtistFail(id) {
     return { type: ActionTypes.FOLLOW_ARTIST_FAIL, id }
 }
 
-export function followArtistActions(musicId, profileId){
+export function followArtistActions(musicId, profileId) {
     return async (dispatch) => {
         try {
             dispatch(followArtist())
@@ -317,8 +323,66 @@ export function followArtistActions(musicId, profileId){
                     dispatch(followArtistFail(response.status))
                 })
 
-        } catch(error){
+        } catch (error) {
             dispatch(followArtistFail(error))
         }
     }
+}
+
+export function controlRepeatOneMusic() {
+    return { type: ActionTypes.CONTROL_REPEAT_ONE_MUSIC }
+}
+
+export function controlRepeatOnePlaylist() {
+    return { type: ActionTypes.CONTROL_REPEAT_ONE_PLAYLIST }
+}
+
+export function controlRepeatDeactivated() {
+    return { type: ActionTypes.CONTROL_REPEAT_DEACTIVATED }
+}
+
+export function shuffleMusics() {
+    return { type: ActionTypes.SHUFFLE_MUSIC }
+}
+
+export function unShuffleMusics() {
+    return { type: ActionTypes.UNSHUFFLE_MUSIC }
+}
+
+export function shuffleMusicsAction() {
+    return async (dispatch) => {
+
+        // get the old queue
+        let musicQueue = await TrackPlayer.getQueue()
+
+        // reset the queue
+        await TrackPlayer.removeUpcomingTracks()
+
+        // shake the queue
+        musicList = musicQueue
+        .map((a) => ({ sort: Math.random(), value: a }))
+        .sort((a, b) => a.sort - b.sort)
+        .map((a) => a.value)
+
+        // update the queue
+        await TrackPlayer.add(musicList)
+        
+        return dispatch(shuffleMusics())
+    }
+}
+
+export function unshuffleMusicsAction() {
+    return (dispatch) => dispatch(unShuffleMusics())
+}
+
+export function controlRepeatOneMusicAction() {
+    return (dispatch) => dispatch(controlRepeatOneMusic())
+}
+
+export function controlRepeatOnePlaylistAction() {
+    return (dispatch) => dispatch(controlRepeatOnePlaylist())
+}
+
+export function controlRepeatDeactivatedAction() {
+    return (dispatch) => dispatch(controlRepeatDeactivated())
 }
