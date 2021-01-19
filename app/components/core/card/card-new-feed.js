@@ -48,6 +48,46 @@ class CardNewFeed extends React.Component {
 
     }
 
+    // to get text background
+    _getPostPublicationBackground(publicationBg) {
+        let background
+        let orientation
+
+        switch (publicationBg) {
+            case 'linear-gradient(to left bottom, #8d7ab5, #dc74ac, #ff7d78, #ffa931, #c0e003)': {
+                background = ['#8d7ab5', '#dc74ac', '#ff7d78', '#ffa931', '#c0e003']
+                orientation = [{ x: 1, y: 0 }, { x: 0, y: 1 }]
+                break;
+            }
+            case 'linear-gradient(to right top, #000000, #000000, #000000, #000000, #000000)': {
+                background = ['#000000', '#000000']
+                orientation = [{ x: 0, y: 1 }, { x: 1, y: 0 }]
+                break;
+            }
+            case 'linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12)': {
+                background = ['#051937', '#004d7a', '#008793', '#00bf72', '#a8eb12']
+                orientation = [{ x: 0, y: 1 }, { x: 1, y: 0 }]
+                break;
+            }
+            case 'linear-gradient(45deg, #ff0047 0%, #2c34c7 100%)': {
+                background = ['#ff0047', '#2c34c7']
+                orientation = [{ x: 0, y: 1 }, { x: 1, y: 0 }]
+                break;
+            }
+            case 'linear-gradient(to right top, #282812, #4a3707, #7b3d07, #b43527, #eb125c)': {
+                background = ['#282812', '#4a3707', '#7b3d07', '#b43527', '#eb125c']
+                orientation = [{ x: 0, y: 1 }, { x: 1, y: 0 }]
+                break;
+            }
+            case 'linear-gradient(to left bottom, #17ea8a, #00c6bb, #009bca, #006dae, #464175)': {
+                background = ['#17ea8a', '#00c6bb', '#009bca', '#006dae', '#464175']
+                orientation = [{ x: 0, y: 1 }, { x: 1, y: 0 }]
+                break;
+            }
+        }
+        return { background, orientation }
+    }
+
     // to select the post publication view
     _renderPost(publication) {
 
@@ -168,15 +208,50 @@ class CardNewFeed extends React.Component {
 
     // to show post publication
     _showPostPublication = (publication) => {
+        const textContainer = () => {
+            console.log(publication.background, publication.type)
+            if (publication.background != undefined && publication.type === 'PostPublication' ) {
+                const { background, orientation } = this._getPostPublicationBackground(publication.background)
+                return (
+                    <TouchableOpacity 
+                    style={{ minHeight: 200, maxHeight: 400 }}
+                    onPress={() => DeviceEventEmitter.emit('toggleModal', { publication, navigation: this.props.navigation, space: this.props.space })}>
+                        <LinearGradient colors={background} start={orientation[0]} end={orientation[1]} style={{ flex: 1, justifyContent: 'center' }}>
+                            <Text style={{
+                            paddingBottom: 10,
+                            paddingHorizontal: 15,
+                            lineHeight: 25,
+                            fontWeight: '400',
+                            fontSize: 25,
+                            fontFamily: 'Gill Sans',
+                            textAlign: 'center',
+                            margin: 10,
+                            color: '#ffffff',
+                            backgroundColor: 'transparent'
+                            }}>
+                                {publication.text}
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                )
+            }
+
+            return (
+                <>
+                    { 
+                        publication.text.trim().length > 0 && <View style={styles.cardPostText}>
+                            <Text>{ publication.text }</Text>
+                        </View>
+                    }
+                </>
+            )
+        }
+
         return (
         <View onLayout={(event) => {
             this.setState({ textHeight: event.nativeEvent.layout.height })
         }}>
-            { 
-                publication.text.trim().length > 0 && <View style={styles.cardPostText}>
-                    <Text>{ publication.text }</Text>
-                </View>
-            }
+            { textContainer() }
         </View>)
     }
 
@@ -450,14 +525,20 @@ class CardNewFeed extends React.Component {
             default: publicationBox = null; break;
         }
         return (
-            <View onLayout={(event) => this.setState({ cardWidth: event.nativeEvent.layout.width })}>
+            <View onLayout={(event) => {
+                if (publication.type === 'PostPublication') {
+                    this.setState({ imageHeight: 0 })
+                } else {
+                    this.setState({ cardWidth: event.nativeEvent.layout.width })
+                }
+            }}>
                 { publicationBox }
             </View>
         )
     }
 
     _showCardFooter = (publication) => {
-        const { like, commentNumber } =publication; 
+        const { like, commentNumber } = publication; 
          return (
             <View style={styles.footerStyle}>
                 <TouchableOpacity onPress={() => this._likePublication()} style={{ flexDirection: 'row' }}>
