@@ -106,6 +106,7 @@ class Feed extends React.Component {
             <View style={styles.header_container}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
                     <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate('Setting')}
                         style={{ justifyContent: 'center', alignItems: 'center' }}>
                         <FontAwesomeIcon icon={faCog} size={24} color={'#aeaeae'} />
                     </TouchableOpacity>
@@ -160,7 +161,7 @@ class Feed extends React.Component {
     _displayPublicationFeed = () => { //borderTopLeftRadius: 35, borderTopRightRadius: 35
         return (
             <View style={{ flex: 1, overflow: 'hidden' }}>
-                <ScrollView scrollEventThrottle={5} style={{ borderTopLeftRadius: 35, borderTopRightRadius: 35 }} showsVerticalScrollIndicator={false} >
+                <ScrollView scrollEventThrottle={5} style={{ borderTopLeftRadius: 35, borderTopRightRadius: 35, borderColor: 'white' }} showsVerticalScrollIndicator={false} >
                     <PublicationStoryHeader goToPublication={this._togglePublicationMode} openStory={this._toggleStoryTrend} />
                     {this._publicationList()}
                 </ScrollView>
