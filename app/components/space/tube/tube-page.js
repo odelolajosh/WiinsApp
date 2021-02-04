@@ -1,16 +1,17 @@
 import React from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, FlatList, ScrollView, TextInput, Image, ActivityIndicator } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, FlatList, ScrollView, TextInput } from 'react-native'
 import { connect } from 'react-redux'
 import * as MyUserActions from '../../../../redux/MyUser/actions'
 import { bindActionCreators } from 'redux'
 import FastImage from 'react-native-fast-image'
-import LinearGradient from 'react-native-linear-gradient'
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faAngleDown, faPaperPlane, faPause, faPlay, faThumbsUp } from '@fortawesome/pro-light-svg-icons'
+import { faAngleDown, faPaperPlane, faHeart, faShare, faDownload, faSave, faCommentLines } from '@fortawesome/pro-light-svg-icons'
+import { faCircle } from '@fortawesome/pro-solid-svg-icons'
 import * as TubePageActions from '../../../../redux/TubePage/actions'
 import { getDateTranslated } from '../../../services/translation/translation-service'
 import VideoPlayer from '../../core/reusable/video/video-player'
+import LinearGradient from 'react-native-linear-gradient'
 
 class TubePage extends React.Component {
 
@@ -24,8 +25,8 @@ class TubePage extends React.Component {
 
     testValue = [
         { id: "", tube: { posterLink: "https://i.pinimg.com/236x/c7/a1/b8/c7a1b863aeba4b9a409b61ad7201924b.jpg", profile: { _meta: { pseudo: "Best locations to visit in LONDON" }, pictureprofile: "" } } },
-        { id: "", tube: { posterLink: "https://unsplash.com/photos/UzZhBohuFXo", profile: { _meta: { pseudo: "VLOG - Our trip tp NEWYORK!" }, pictureprofile: "" } } },
-        { id: "", tube: { posterLink: "https://unsplash.com/photos/_6zo6Qo-iVo", profile: { _meta: { pseudo: "Most Commonly visited places" }, pictureprofile: "" } } },
+        { id: "", tube: { posterLink: "https://images.unsplash.com/photo-1612286350087-116a6b734781?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80", profile: { _meta: { pseudo: "VLOG - Our trip tp NEWYORK!" }, pictureprofile: "" } } },
+        { id: "", tube: { posterLink: "https://images.unsplash.com/photo-1610939978022-8f73236f5953?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=934&q=80", profile: { _meta: { pseudo: "Most Commonly visited places" }, pictureprofile: "" } } },
         { id: "", tube: { posterLink: "https://images.unsplash.com/photo-1512552288940-3a300922a275?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8dmFjYXRpb258ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60", profile: { _meta: { pseudo: "Beautify locations to spend your vacation" }, pictureprofile: "" } } },
         { id: "", tube: { posterLink: "https://images.unsplash.com/photo-1528277342758-f1d7613953a2?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTN8fGFmcmljYXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60", profile: { _meta: { pseudo: "AFRICA the world wonder" }, pictureprofile: "" } } }
     ]
@@ -34,65 +35,89 @@ class TubePage extends React.Component {
         this.uploadPageTube(this.props.screenProps.rootNavigation.state.params.tubeId)
     }
 
-    
-
     // to upload the page of the tube
     uploadPageTube = (id) => {
         this.setState({ videoReady: false })
         this.props.actions.getTubePageActions(id)
     }
 
-    // to display the header view
-    _headerRender = () => {
+    _subHeader = () => {
         return (
             <View>
-                {/* Video section */}
-                <View style={styles.videoSection}>
-                    <VideoPlayer src={this.props.TubePage.tube.videoLink} posterSrc={this.props.TubePage.tube.posterLink} />
+
+                {/* Title */}
+                <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
+                    <Text style={{ fontWeight: 'bold', fontFamily: 'Avenir-Heavy', fontSize: 19, paddingBottom: 10 }}>{this.props.TubePage.tube.name}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {/* for the next update */}
+                        {/* <Text>4.7K Views</Text>
+                        <FontAwesomeIcon style={{ marginHorizontal: 5 }} icon={faCircle} size={2} color="#77838F" /> */}
+                        <Text>{getDateTranslated(this.props.TubePage.tube.createdAt)}</Text>
+                    </View>
                 </View>
+
+                {/* Buttons */}
+                <View style={{ flexDirection: 'row', marginVertical: 15 }}>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <FontAwesomeIcon icon={faDownload} size={20} color="#77838F" />
+                            <Text style={{ color: "#77838F", fontSize: 13, paddingTop: 4 }}>Download</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <FontAwesomeIcon icon={faShare} size={20} color="#77838F" />
+                            <Text style={{ color: "#77838F", fontSize: 13, paddingTop: 4 }}>Share</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <FontAwesomeIcon icon={faCommentLines} size={20} color="#77838F" />
+                            <Text style={{ color: "#77838F", fontSize: 13, paddingTop: 4 }}>Comment</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <FontAwesomeIcon icon={faHeart} size={20} color="#77838F" />
+                            <Text style={{ color: "#77838F", fontSize: 13, paddingTop: 4 }}>{this.props.TubePage.tube.totalLike}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                <View style={{ height: 1, width: '100%', backgroundColor: '#e7ebed' }} />
 
                 {/* Profile */}
-                <View style={{ height: 70, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15 }}>
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ marginEnd: 15 }}>
-                            <FastImage
-                                style={{ width: 45, height: 45, borderRadius: 45, borderWidth: 2, borderColor: '#df0ddf' }}
-                                resizeMode={FastImage.resizeMode.cover}
-                                source={{ uri: this.props.TubePage.tube.profile.pictureprofile, priority: FastImage.priority.normal }}
-                            />
-                        </View>
-                        <View style={{ }}>
-                            <Text style={{ fontWeight: 'bold', fontFamily: 'Avenir-Heavy' }}>{this.props.TubePage.tube.name}</Text>
-                            <Text>{getDateTranslated(this.props.TubePage.tube.createdAt)} </Text>
-                        </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15 }}>
+                    <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                        <FastImage
+                            style={{ width: 45, height: 45, borderRadius: 45 }}
+                            resizeMode={FastImage.resizeMode.cover}
+                            source={{ uri: this.props.TubePage.tube.profile.pictureprofile, priority: FastImage.priority.normal }}
+                        />
                     </View>
-                    <View style={{ }}>
-                        {/* <LinearGradient
-                            start={{ x: 0, y: 1 }}
-                            end={{ x: 1, y: 0 }}
-                            colors={['#3C349B', '#8E46DF']}
-                            style={{ borderRadius: 25, position: 'relative', bottom: 3, marginHorizontal: 5 }}
-                        >
-                            <TouchableOpacity>
-                                <Text style={{ textAlign: 'center', paddingVertical: 12, paddingHorizontal: 15, fontWeight: '700', color: 'white' }}>Follow</Text>
-                            </TouchableOpacity>
-                        </LinearGradient> */}
-                        <FontAwesomeIcon icon={faThumbsUp} size={20} color="#77838F" />
-                        <Text style={{ color: "#77838F", marginTop: 5 }}>{ this.props.TubePage.tube.totalLike }</Text>
+                    <View style={{ flex: 9, paddingLeft: 15 }}>
+                        <Text style={{ fontWeight: 'bold', fontFamily: 'Avenir-Heavy', fontSize: 19 }}>{this.props.TubePage.tube.profile._meta.pseudo}</Text>
+                        <Text>Community: 4.5k</Text>
                     </View>
+
+                    <View style={{flex: 5, alignItems: 'center'}}>
+                        <TouchableOpacity style={{marginHorizontal: 5, marginVertical: 5, backgroundColor: '#e8e8e882', justifyContent: 'center', alignItems: 'center', borderRadius: 5, padding: 10 }}>
+                            <Text style={{fontSize: 15}}>Subscribed</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
-            </View>
-        )
+
+                <View style={{ height: 1, width: '100%', backgroundColor: '#e7ebed' }} />
+
+            </View>)
     }
 
-    // to display the title and description
-    _titleRender = () => {
-        return (
-            <View style={{ paddingHorizontal: 15, paddingTop: 15 }}>
-                <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{ 'Best places in NEW YORK!' }</Text>
-                <Text style={{ fontSize: 14, marginTop: 5 }}>{ 'Discover the most incredible places ...' }</Text>
-            </View>
-        )
+    // to display the header view
+    _headerRender = () => {
+        return (<View style={styles.videoSection}>
+            <VideoPlayer src={this.props.TubePage.tube.videoLink} posterSrc={this.props.TubePage.tube.posterLink} />
+        </View>)
     }
 
     // to display the comment view
@@ -120,13 +145,29 @@ class TubePage extends React.Component {
         )
     }
 
-    // to display the comment button
-    _footerComment = () => {
+    _playNextSection = (tubeList = this.testValue, title, line) => {
+
+        if (!tubeList || tubeList.length == 0) return null
+
         return (
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#e8eaed75' }}>
-                <TouchableOpacity onPress={() => this.setState({ commentView: true })}>
-                    <Text style={{ fontSize: 18, paddingVertical: 19, fontFamily: 'Avenir-Heavy' }}>Comment 18k</Text>
-                </TouchableOpacity>
+            <View style={styles.container_section}>
+
+                {/* Header */}
+                <View style={{ paddingHorizontal: 25, paddingTop: 15 }}>
+                    <View style={{ flexWrap: 'wrap' }}>
+                        <Text style={{ fontSize: 22, fontFamily: 'Avenir-Heavy', letterSpacing: 1, color: '#1E2432', paddingHorizontal: 5 }}>{title}</Text>
+                        <View>
+                            <LinearGradient colors={['#31B3D8', '#784BEA']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ height: 3, width: '100%', borderRadius: 35 }} />
+                        </View>
+                    </View>
+                </View>
+
+                {/* Video List */}
+                {this._showTubeList(tubeList)}
+
+                {/* Line Separator */}
+                {line ? this._lineSeparator() : null}
+
             </View>
         )
     }
@@ -134,12 +175,11 @@ class TubePage extends React.Component {
     // to display some tubes suggestions
     _suggestionTubeRender = () => {
         return (
-            <ScrollView style={{ height: '100%' }}>
-                {/* Title */}
-                {this._titleRender()}
-                {this._tubeListBySection(this.props.TubePage.tubesFollower, 'CORE.From-X', { value: this.props.TubePage.tube.profile._meta.pseudo }, true)}
-                {this._tubeListBySection(this.props.TubePage.tubesSuggestions, 'CORE.Suggestion', false)}
-                {/* {this.state.commentView ? null : this._footerComment()} */}
+            <ScrollView style={{ height: '100%', marginBottom: 50 }}>
+                {this._subHeader()}
+                {/* Others videos */}
+                {this._playNextSection(this.props.TubePage.tubesFollower, 'Play next', { value: this.props.TubePage.tube.profile._meta.pseudo }, true)}
+                {this._tubeListBySection(this.props.TubePage.tubesSuggestions, 'Suggestion', false)}
             </ScrollView>
         )
     }
@@ -150,7 +190,7 @@ class TubePage extends React.Component {
     }
 
     // to display some tube by section
-    _tubeListBySection = (tubeList, title, line) => {
+    _tubeListBySection = (tubeList = this.testValue, title, line) => {
 
         if (!tubeList || tubeList.length == 0) return null
 
@@ -159,8 +199,11 @@ class TubePage extends React.Component {
 
                 {/* Header */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 25, paddingTop: 15, alignItems: 'center' }}>
-                    <View>
-                        <Text style={{ fontSize: 30, fontFamily: 'Avenir-Heavy', letterSpacing: 1, color: '#1E2432' }}>{title}</Text>
+                    <View style={{ flexWrap: 'wrap' }}>
+                        <Text style={{ fontSize: 22, fontFamily: 'Avenir-Heavy', letterSpacing: 1, color: '#1E2432', paddingHorizontal: 5 }}>{title}</Text>
+                        <View>
+                            <LinearGradient colors={['#31B3D8', '#784BEA']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ height: 3, width: '100%' }} />
+                        </View>
                     </View>
                     <View>
                         <Text style={{ fontWeight: '400', fontSize: 15, fontFamily: 'Avenir-Heavy', color: '#FF2D55' }}>See All</Text>
@@ -194,22 +237,6 @@ class TubePage extends React.Component {
                     <Text style={styles.greyText}>{item.tube.profile._meta.pseudo}</Text>
                 </View>
 
-                {/* Footer Card
-                <View style={{ position: 'absolute', bottom: 0, width: '100%', height: 70, }}>
-                    <LinearGradient
-                        colors={['#fbfbfb00', '#bdc3c72e', '#2c3e50d1']}
-                        style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, height: '100%', borderBottomEndRadius: 8, borderBottomStartRadius: 8 }}>
-                        <FastImage
-                            style={{ width: 45, height: 45, borderRadius: 45, borderWidth: 2, borderColor: '#FF2D55' }} resizeMode={FastImage.resizeMode.cover}
-                            source={{ uri: item.tube.profile.pictureprofile, priority: FastImage.priority.normal }}
-                        />
-                        <View style={{ paddingLeft: 10 }}>
-                            <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: '800' }}>{item.tube.profile._meta.pseudo}</Text>
-                        </View>
-                    </LinearGradient>
-
-                </View> */}
-
             </TouchableOpacity>
         )
 
@@ -219,7 +246,6 @@ class TubePage extends React.Component {
     _showTubeList = (tubeList) => {
         return (
             <View style={{ paddingBottom: 10 }}>
-
                 <View style={{ flexDirection: 'row' }}>
                     <FlatList
                         horizontal={true}
@@ -266,7 +292,7 @@ const styles = StyleSheet.create({
         width: 160
     },
     oneTubeImage: {
-        borderRadius: 14,
+        borderRadius: 5,
         height: 110,
         width: '100%',
         backgroundColor: 'white',
@@ -303,7 +329,7 @@ const ActionCreators = Object.assign(
     {},
     MyUserActions,
     TubePageActions
-);
+)
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(ActionCreators, dispatch),
