@@ -150,7 +150,7 @@ class TubePage extends React.Component {
     }
 
     // to display some tube by section
-    _tubeListBySection = (tubeList=this.testValue, title, line) => {
+    _tubeListBySection = (tubeList, title, line) => {
 
         if (!tubeList || tubeList.length == 0) return null
 

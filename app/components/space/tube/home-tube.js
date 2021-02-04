@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import FastImage from 'react-native-fast-image'
 import LinearGradient from 'react-native-linear-gradient'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { TubesCategories } from './../../core/data/tubes'
 import * as TubeMenuActions from '../../../../redux/TubeMenu/actions'
 import I18n from '../../../i18n/i18n'
@@ -36,6 +37,7 @@ class HomeTube extends React.Component {
                         value={this.state.search}
                         blurOnSubmit={true}
                     />
+                    <FontAwesomeIcon icon={faSearch} color={'grey'} size={21} style={{ opacity: 0.8, position: 'absolute', right: 25 }} />
                 </View>
             </View>
         )
@@ -141,7 +143,7 @@ class HomeTube extends React.Component {
 
     // to display the tubelist by section
     _tubeListBySection = (tubeList, title, titleStyle = {}, isLarge = false) => {
-        if (tubeList === undefined || tubeList === null || tubeList.length == 0) tubeList = [{}, {}, {}] //return null
+        if (tubeList === undefined || tubeList === null || tubeList.length == 0) null
 
         return (
             <View style={styles.container_section}>
