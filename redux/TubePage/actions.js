@@ -1,5 +1,56 @@
 import * as ActionTypes from './constants'
 import AsyncStorage from '@react-native-community/async-storage'
+import { getCacheLinkOrSeverLinkForTube } from './../../app/services/cache/cache-tube-service'
+import { addTubeInCache } from './../TubeMenu/actions'
+
+export function downloadTubeProgress(progress) {
+    return { type: ActionTypes.DOWNLOAD_TUBE_PROGRESS, payload: progress }
+}
+
+export function downloadTubeStart() {
+    return { type: ActionTypes.DOWNLOAD_TUBE }
+}
+
+export function downloadTubeSuccess() {
+    return { type: ActionTypes.DOWNLOAD_TUBE_SUCCESS }
+}
+
+export function downloadTubeFail(error) {
+    return {
+        type: ActionTypes.DOWNLOAD_TUBE_FAIL,
+        payload: error,
+    }
+}
+
+export function deleteDownloadedTubeStart() {
+    return { type: ActionTypes.DELETE_DOWNLOADED_TUBE }
+}
+
+export function deleteDownloadedTubeSuccess() {
+    return { type: ActionTypes.DELETE_DOWNLOADED_TUBE_SUCCESS }
+}
+
+export function deleteDownloadedTubeFail(error) {
+    return {
+        type: ActionTypes.DELETE_DOWNLOADED_TUBE_FAIL,
+        payload: error,
+    }
+}
+
+export function followInTubePageStart() {
+    return { type: ActionTypes.FOLLOW_IN_TUBE_PAGE }
+}
+
+export function followInPageSuccess() {
+    return { type: ActionTypes.FOLLOW_IN_TUBE_PAGE_SUCCESS }
+}
+
+export function followInPageFail(error) {
+    return {
+        type: ActionTypes.FOLLOW_IN_TUBE_PAGE_FAIL,
+        payload: error,
+    }
+}
 
 export function likeTubePageSuccess() {
     return { type: ActionTypes.LIKE_TUBE_PAGE_SUCCESS }
@@ -31,7 +82,13 @@ export function dislikeTubePageFail(error) {
     }
 }
 
-export function getTubePageSuccess(payload) {
+export async function getTubePageSuccess(payload) {
+
+    const foundInCache = await getCacheLinkOrSeverLinkForTube(payload.tube.videoLink)
+
+    if(foundInCache){ payload.tube.inCache = true }
+    else { payload.tube.inCache = false }
+
     return { type: ActionTypes.GET_TUBE_PAGE_SUCCESS, payload }
 }
 
@@ -59,14 +116,14 @@ export function getTubePageActions(id) {
 
             return fetch(`https://wiins-backend.herokuapp.com/tube/app/video/${id}`, {
                 method: 'GET',
-                headers: { 
+                headers: {
                     Accept: 'application/json', 'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
             })
-            .then((response) => response.json())
-            .then( async (response) => {
-                    if (response.status == 201) return dispatch(getTubePageSuccess(response.page))
+                .then((response) => response.json())
+                .then(async (response) => {
+                    if (response.status == 201) return dispatch(await getTubePageSuccess(response.page))
                     return dispatch(getTubePageFail(response.message))
                 })
         } catch (error) {
@@ -84,15 +141,15 @@ export function likeTubePageActions(id) {
 
             return fetch(`https://wiins-backend.herokuapp.com/tube/like/${id}`, {
                 method: 'GET',
-                headers: { 
+                headers: {
                     Accept: 'application/json', 'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
             })
-            .then((response) => response.json())
-            .then( async (response) => {
-                    if (response.status == 201) return dispatch(likeTubePageSuccess(response.page))
-                    return dispatch(likeTubePageFail(response.message))
+                .then((response) => response.json())
+                .then(async (response) => {
+                    if (response.status == 201) return dispatch(likeTubePageSuccess())
+                    return dispatch(likeTubePageFail())
                 })
         } catch (error) {
             return dispatch(likeTubePageFail(error));
@@ -109,18 +166,64 @@ export function dislikeTubePageActions(id) {
 
             return fetch(`https://wiins-backend.herokuapp.com/tube/dislike/${id}`, {
                 method: 'GET',
-                headers: { 
+                headers: {
                     Accept: 'application/json', 'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
             })
-            .then((response) => response.json())
-            .then( async (response) => {
-                    if (response.status == 201) return dispatch(dislikeTubePageSuccess(response.page))
-                    return dispatch(dislikeTubePageFail(response.message))
+                .then((response) => response.json())
+                .then(async (response) => {
+                    if (response.status == 201) return dispatch(dislikeTubePageSuccess())
+                    return dispatch(dislikeTubePageFail())
                 })
         } catch (error) {
             return dispatch(dislikeTubePageFail(error));
         }
     }
+}
+
+export function followInTubePageActions(profileId) {
+
+    return async (dispatch) => {
+        try {
+            dispatch(followInTubePageStart())
+            const token = await AsyncStorage.getItem('userToken')
+
+            return fetch('https://wiins-backend.herokuapp.com/profile/follow/' + profileId, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json', 'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then((response) => response.json())
+                .then(async (response) => {
+                    if (response.status == 201) return dispatch(followInTubePageSuccess())
+                    return dispatch(followInTubePageFail())
+                })
+        } catch (error) {
+            return dispatch(followInTubePageFail(error));
+        }
+    }
+}
+
+export function downloadTubeStartActions() {
+    return (dispatch) => {
+        dispatch(downloadTubeStart())
+    }
+}
+
+export function downloadTubeProgressActions(progress) {
+    return (dispatch) => dispatch(downloadTubeProgress(progress))
+}
+
+export function addTubeInCacheSuccessActions(tube) {
+    return (dispatch) => {
+        dispatch(downloadTubeSuccess())
+        dispatch(addTubeInCache(tube))
+    }
+}
+
+export function addTubeInCacheFailedActions() {
+    return (dispatch) => { dispatch(downloadTubeFail()) }
 }

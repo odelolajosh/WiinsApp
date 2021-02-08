@@ -4,13 +4,6 @@ export const initialState = {
     tubesSuggestions: [],
     comment: [],
     isLoading: false,
+    progressDownload: 0,
     error: null,
 }
-
-
-
-
-
-
-
-
