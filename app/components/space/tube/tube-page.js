@@ -7,7 +7,7 @@ import FastImage from 'react-native-fast-image'
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faPaperPlane, faHeart, faShare, faDownload, faSave, faCommentLines } from '@fortawesome/pro-light-svg-icons'
-import { faCircle } from '@fortawesome/pro-solid-svg-icons'
+import { faCircle, faSearch } from '@fortawesome/pro-solid-svg-icons'
 import * as TubePageActions from '../../../../redux/TubePage/actions'
 import { getDateTranslated } from '../../../services/translation/translation-service'
 import VideoPlayer from '../../core/reusable/video/video-player'
@@ -229,10 +229,12 @@ class TubePage extends React.Component {
             >
 
                 {/* Background Image */}
-                <FastImage
-                    style={styles.oneTubeImage} resizeMode={FastImage.resizeMode.cover}
-                    source={{ uri: item.tube.posterLink, priority: FastImage.priority.normal }}
-                />
+                <View style={styles.oneTubeImageBox}>
+                    <FastImage
+                        style={styles.oneTubeImage} resizeMode={FastImage.resizeMode.cover}
+                        source={{ uri: item.tube.posterLink, priority: FastImage.priority.normal }}
+                    />
+                </View>
                 <View style={{ paddingVertical: 10 }}>
                     <Text style={styles.greyText}>{item.tube.profile._meta.pseudo}</Text>
                 </View>
@@ -291,19 +293,23 @@ const styles = StyleSheet.create({
         marginVertical: 15,
         width: 160
     },
+    oneTubeImageBox: {
+        height: 110,
+        width: '100%',
+        shadowColor: "red",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
     oneTubeImage: {
         borderRadius: 5,
         height: 110,
         width: '100%',
         backgroundColor: 'white',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 2,
     },
     greyText: {
         color: '#77838F',

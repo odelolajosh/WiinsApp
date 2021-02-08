@@ -30,7 +30,7 @@ class CardNewFeedMasonry extends React.Component {
         const { width, height } = event.nativeEvent;
         const ratio = this.state.cardWidth / width;
         const ratioHeight = height * ratio;
-        this.setState({ imageHeight: ratioHeight >= 200 ? ratioHeight : 200 });
+        this.setState({ imageHeight: ratioHeight <= 200 ? 200 : ratioHeight > 500 ? 500 : ratioHeight });
     }
 
     _getPostPublicationBackground(publicationBg) {

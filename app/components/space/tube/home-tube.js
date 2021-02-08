@@ -7,6 +7,7 @@ import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import FastImage from 'react-native-fast-image'
 import LinearGradient from 'react-native-linear-gradient'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faSearch } from '@fortawesome/pro-light-svg-icons'
 import { TubesCategories } from './../../core/data/tubes'
 import * as TubeMenuActions from '../../../../redux/TubeMenu/actions'
 import I18n from '../../../i18n/i18n'
@@ -205,25 +206,26 @@ const styles = StyleSheet.create({
         backgroundColor: '#eef2f4'
     },
     header_container: {
-        paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() + 10 : 10,
-        paddingBottom: 15,
+        marginTop: Platform.OS === 'ios' ? getStatusBarHeight() + 10 : 0,
+        paddingVertical: 10,
         paddingHorizontal: 25,
         backgroundColor: '#f9fafc',
         borderBottomRightRadius: 25,
         borderBottomLeftRadius: 25,
         position: 'relative',
-        borderWidth: 0.3,
-        borderColor: '#c3c3c36e'
+        borderWidth: .3,
+        borderColor: '#c3c3c36e',
+        overflow: 'hidden',
     },
     container_search_bar: {
         height: 45,
-        fontSize: 15,
         paddingLeft: 15,
         flexDirection: 'row',
         borderRadius: 25,
         backgroundColor: '#edf1f3',
         overflow: 'hidden',
-        alignItems: 'center'
+        alignItems: 'center',
+        position: 'relative',
     },
     container_search_bar_icon: {
         position: 'absolute',
@@ -236,8 +238,9 @@ const styles = StyleSheet.create({
     search_bar: {
         fontSize: 15,
         paddingLeft: 5,
-        paddingVertical: 15,
-        width: '100%'
+        paddingRight: 55,
+        width: '100%',
+        flex: 1
     },
     add_button: {
         backgroundColor: 'red',

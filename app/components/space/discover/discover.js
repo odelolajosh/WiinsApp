@@ -87,13 +87,13 @@ class Discover extends React.Component {
     _displayOptionSearchBar = () => {
         if (this.state.search.length <= 2) {
             return (
-                <TouchableOpacity style={{ position: 'absolute', right: 25, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity style={{ opacity: 0.8, position: 'absolute', right: 25 }}>
                     <FontAwesomeIcon icon={faSearch} color={'grey'} size={21} style={{ opacity: 0.8 }} />
                 </TouchableOpacity>
             )
         } else {
             return (
-                <TouchableOpacity onPress={() => this.setState({ search: '' })} style={{ position: 'absolute', right: 25, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => this.setState({ search: '' })} style={{ opacity: 0.8, position: 'absolute', right: 25 }}>
                     <FontAwesomeIcon icon={faTimes} color={'grey'} size={21} style={{ opacity: 0.8 }} />
                 </TouchableOpacity>
             )
@@ -115,6 +115,7 @@ class Discover extends React.Component {
                         blurOnSubmit={true}
                     />
                     {this._displayOptionSearchBar()}
+                    {/* <FontAwesomeIcon icon={faSearch} color={'grey'} size={21} style={{ opacity: 0.8, position: 'absolute', right: 25 }} /> */}
                 </View>
             </View>
         )
@@ -251,25 +252,26 @@ const styles = StyleSheet.create({
         backgroundColor: '#eef2f4'
     },
     header_container: {
-        paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() + 10 : 10,
-        paddingBottom: 15,
+        marginTop: Platform.OS === 'ios' ? getStatusBarHeight() + 10 : 0,
+        paddingVertical: 10,
         paddingHorizontal: 25,
         backgroundColor: '#f9fafc',
         borderBottomRightRadius: 25,
         borderBottomLeftRadius: 25,
         position: 'relative',
-        borderWidth: 0.3,
-        borderColor: '#c3c3c36e'
+        borderWidth: .3,
+        borderColor: '#c3c3c36e',
+        overflow: 'hidden',
     },
     container_search_bar: {
         height: 45,
-        fontSize: 15,
         paddingLeft: 15,
         flexDirection: 'row',
         borderRadius: 25,
         backgroundColor: '#edf1f3',
         overflow: 'hidden',
-        alignItems: 'center'
+        alignItems: 'center',
+        position: 'relative',
     },
     one_hastag: {
         backgroundColor: 'white',
@@ -289,8 +291,9 @@ const styles = StyleSheet.create({
     search_bar: {
         fontSize: 15,
         paddingLeft: 5,
-        paddingVertical: 15,
-        width: '100%'
+        paddingRight: 55,
+        width: '100%',
+        flex: 1
     }
 })
 
